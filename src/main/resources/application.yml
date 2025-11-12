@@ -1,0 +1,29 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: msa-user
+  datasource:
+    url: jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+validation:
+  email:
+    pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+    message: "El formato del email no es válido"
+  password:
+    pattern: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+    message: "La contraseña debe tener mínimo 8 caracteres, al menos 1 minúscula, 1 mayúscula, 1 número y 1 caracter especial..."
+    
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationThatShouldBeLongEnough123456789
+  expiration: 86400000  # 24 horas en milisegundos

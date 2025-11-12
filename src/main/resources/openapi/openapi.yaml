@@ -1,0 +1,232 @@
+openapi: 3.0.0
+info:
+  title: API User
+  description: |
+    User lifecycle management APIs for BCI Bank
+  contact:
+    name: David De La Cruz S.
+    email: david.delacruzs@outlook.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development Environment
+tags:
+  - name: User
+    description: User Controller
+paths:
+  /users:
+    post:
+      tags:
+        - User
+      summary: Create an user
+      description: Create an user
+      operationId: PostUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostUserRequest"
+            examples:
+              PostUserRequestExample:
+                $ref: "#/components/examples/PostUserRequestExample"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostUserResponse"
+              examples:
+                PostUserResponseExample:
+                  $ref: "#/components/examples/PostUserResponseExample"
+        "400":
+          description: The request information it's not correct.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: You're not authorized to perform this operation.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: You don't have the right permissions to execute this operation.
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Not Found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal error
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+components:
+  schemas:
+    CityCode:
+      type: string
+      description: National area code associated with the user’s phone number, without country code
+      minLength: 1
+      maxLength: 5
+      pattern: ^[0-9]+$
+    CountryCode:
+      type: string
+      description: International country calling code (E.164) corresponding to the user’s phone number
+      minLength: 1
+      maxLength: 3
+      pattern: ^[0-9]+$
+    Created:
+      type: string
+      format: date-time
+      description: Timestamp indicating when the user record was created, in ISO 8601 date-time format
+    Email:
+      type: string
+      format: email
+      description: Unique email address associated with the user, validated according to standard email formatting rules
+      minLength: 10
+      maxLength: 75
+    Error:
+      type: object
+      properties:
+        message:
+          maxLength: 200
+          type: string
+          description: Human-readable error message describing the issue encountered during the request
+    IsActive:
+      type: boolean
+      description: Indicates whether the user account is currently active
+    LastLogin:
+      type: string
+      format: date-time
+      description: Timestamp representing the user’s most recent successful login, in ISO 8601 date-time format
+    Modified:
+      type: string
+      format: date-time
+      description: Timestamp indicating the last update made to the user record, in ISO 8601 date-time format
+    Name:
+      type: string
+      description: User’s full name, allowing alphabetic characters, accented characters, numbers, and spaces
+      minLength: 5
+      maxLength: 50
+      pattern: ^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s]+$
+    Number:
+      type: string
+      description: Local subscriber number of the user’s phone, excluding country and area codes
+      minLength: 6
+      maxLength: 15
+      pattern: ^[0-9]+$
+    Password:
+      type: string
+      description: User’s password used for authentication; must comply with the platform’s password-complexity requirements
+    Phone:
+      type: object
+      description: Complete phone entry decomposed into country code, area code, and local subscriber number
+      required:
+        - number
+        - countryCode
+      properties:
+        number:
+          $ref: "#/components/schemas/Number"
+        cityCode:
+          $ref: "#/components/schemas/CityCode"
+        countryCode:
+          $ref: "#/components/schemas/CountryCode"
+    Token:
+      type: string
+      description: JWT token issued after successful authentication, used to access protected resources
+    User:
+      type: object
+      description: Represents a fully registered user, including identity information, contact data, lifecycle timestamps, and authentication metadata
+      required:
+        - name
+        - email
+        - phones
+        - id
+        - created
+        - modified
+        - lastLogin
+        - token
+        - isActive
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        email:
+          $ref: "#/components/schemas/Email"
+        phones:
+          type: array
+          items:
+            $ref: "#/components/schemas/Phone"    
+        id:
+          $ref: "#/components/schemas/UserId"
+        created:
+          $ref: "#/components/schemas/Created"
+        modified:
+          $ref: "#/components/schemas/Modified"
+        lastLogin:
+          $ref: "#/components/schemas/LastLogin"
+        token:
+          $ref: "#/components/schemas/Token"
+        isActive:
+          $ref: "#/components/schemas/IsActive"
+    UserId:
+      type: string
+      format: uuid
+      description: System-generated unique identifier for the user, in UUID format
+    
+    PostUserRequest:
+      type: object
+      description: Payload required to create a new user in the system
+      required:
+        - name
+        - email
+        - password
+        - phones
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        email:
+          $ref: "#/components/schemas/Email"
+        password:
+          $ref: "#/components/schemas/Password"
+        phones:
+          type: array
+          items:
+            $ref: "#/components/schemas/Phone"
+    PostUserResponse:
+      description: Represents the complete user entity returned after successful creation
+      allOf:
+        - $ref: "#/components/schemas/User"
+  examples:
+    PostUserRequestExample:
+      value:
+        name: David De La Cruz Suárez
+        email: david.delacruzs@outlook.com
+        password: Abcdef123456$
+        phones:
+          - number: "2600388"
+            citycode: "04"
+            countrycode: "593"
+    PostUserResponseExample:
+      value:
+        name: David De La Cruz Suárez
+        email: david.delacruzs@outlook.com
+        phones:
+          - number: "2600388"
+            citycode: "04"
+            countrycode: "593"
+        id: 2ec925bb-a58e-4abe-8f27-69721b9a9a8c
+        created: 2025-11-10T22:16:55.449Z
+        modified: 2025-11-10T22:18:55.449Z
+        lastLogin: 2025-11-10T22:16:55.449Z
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        isActive: true
