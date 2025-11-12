@@ -85,7 +85,7 @@ El proyecto sigue una arquitectura en capas con los siguientes componentes:
 
 1. **Clonar el repositorio:**
 ```bash
-git clone <url-repositorio>
+git clone https://github.com/ddelacruzs/msa-user.git
 cd msa-user
 ```
 
@@ -240,7 +240,7 @@ La aplicación estará disponible en: **http://localhost:8080**
 #### Registro exitoso:
 
 ```bash
-curl -X POST http://localhost/api/v1/users \
+curl -X POST http://localhost:8080/api/v1/users \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Juan Rodriguez",
@@ -259,7 +259,7 @@ curl -X POST http://localhost/api/v1/users \
 #### Registro con email duplicado:
 
 ```bash
-curl -X POST http://localhost/api/v1/users \
+curl -X POST http://localhost:8080/api/v1/users \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Pedro Sanchez",
