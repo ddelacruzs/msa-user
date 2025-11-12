@@ -20,7 +20,7 @@ API RESTful reactiva para registro y gestión de usuarios con autenticación JWT
 - [Testing](#-testing)
 - [Documentación API](#-documentación-api)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Diagramas](DIAGRAMAS.md)
+- [Diagramas](DIAGRAMS.md)
 
 ## ✨ Características
 
